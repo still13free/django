@@ -6,7 +6,7 @@ from mainapp.models import Product, ProductCategory
 def main(request):
     context = {
         'title': 'Главная',
-        'products': Product.objects.all()
+        'products': Product.objects.all()[:4]
     }
     return render(request, 'mainapp/index.html', context=context)
 
