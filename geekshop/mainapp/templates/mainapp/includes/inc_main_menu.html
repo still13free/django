@@ -1,3 +1,11 @@
-<li><a href="{% url 'main' %}" {% if request.resolver_match.url_name == 'main' %}class="active"{% endif %}>домой</a></li>
-<li><a href="{% url 'products:products' %}" {% if request.resolver_match.namespace == 'products' %}class="active"{% endif %}>продукты</a></li>
-<li><a href="{% url 'contacts' %}" {% if request.resolver_match.url_name == 'contacts' %}class="active"{% endif %}>контакты</a></li>
+<li><a href="{% url 'main' %}" {% if request.resolver_match.url_name == 'main' %} class="active" {% endif %}>домой</a></li>
+<li><a href="{% url 'products:products' %}" {% if request.resolver_match.namespace == 'products' %} class="active" {% endif %}>продукты</a></li>
+<li><a href="{% url 'contacts' %}" {% if request.resolver_match.url_name == 'contacts' %} class="active" {% endif %}>контакты</a></li>
+
+{% if user.is_authenticated %}
+    <li><a href="{% url 'auth:edit' %}">{{ user.first_name|default:'пользователь' }}</a></li>
+    <li><a href="{% url 'auth:logout' %}">выйти</a></li>
+{% else %}
+    <li><a href="{% url 'auth:register' %}">регистрация</a></li>
+    <li><a href="{% url 'auth:login' %}">вoйти</a></li>
+{% endif %}
