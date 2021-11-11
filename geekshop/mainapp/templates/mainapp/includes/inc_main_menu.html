@@ -5,6 +5,10 @@
     <li><a href="{% url 'products:products' %}" {% if request.resolver_match.namespace == 'products' %} class="active" {% endif %}>продукты</a></li>
     <li><a href="{% url 'contacts' %}" {% if request.resolver_match.url_name == 'contacts' %} class="active" {% endif %}>контакты</a></li>
 
+    {% if user.is_superuser %}
+        <li><a href="{% url 'adminapp:user_list' %}">админка</a></li>
+    {% endif %}
+
     {% if user.is_authenticated %}
         <li><a href="{% url 'auth:edit' %}">{{ user.first_name|default:'пользователь' }}</a></li>
         <li><a href="{% url 'auth:logout' %}">выйти</a></li>

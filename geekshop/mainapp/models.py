@@ -5,6 +5,7 @@ class ProductCategory(models.Model):
     name = models.CharField(max_length=64, unique=True,
                             verbose_name='название')
     description = models.TextField(verbose_name='описание')
+    is_active = models.BooleanField(default=True)
 
     def __str__(self) -> str:
         return f'{self.name}'
@@ -29,6 +30,7 @@ class Product(models.Model):
         decimal_places=2, max_digits=10, default=0, verbose_name='цена продукта')
     quantity = models.PositiveSmallIntegerField(
         default=0, verbose_name='количество')
+    is_active = models.BooleanField(default=True)
 
     def __str__(self) -> str:
         return f'{self.name} ({self.category.name})'
