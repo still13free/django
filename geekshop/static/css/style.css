@@ -108,7 +108,7 @@ html, body {
     border-radius: 5px;
     height: 30px;
     margin: 5px auto;
-    width: 135px;
+    width: 160px;
     padding: 0 15px;
 }
 
@@ -118,9 +118,10 @@ html, body {
 }
 
 .product_record {
-    height: 125px;
+    height: 150px;
     margin: 15px auto;
     position: relative;
+	margin-left: 50px;
 }
 
 .product_record.not_active {
@@ -239,7 +240,7 @@ html, body {
     float: left;
     margin-top: 0px;
     margin-left: 25px;
-    width: 175px;
+    width: 200px;
 }
 
 .category_record .category_desc {

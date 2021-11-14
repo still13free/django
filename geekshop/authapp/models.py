@@ -6,3 +6,4 @@ class ShopUser(AbstractUser):
     avatar = models.ImageField(
         upload_to='users_avatars', blank=True, verbose_name='Аватар')
     age = models.PositiveSmallIntegerField(verbose_name='Возраст')
+    is_active = models.BooleanField(default=True)
