@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
 from django.contrib.auth.decorators import user_passes_test
 from django.urls import reverse
-from adminapp.forms import ShopUserAdminEditForm
+from adminapp.forms import ShopUserAdminEditForm, ProductCategoryEditForm
 from authapp.forms import ShopUserRegisterForm
 from authapp.models import ShopUser
 from mainapp.models import ProductCategory, Product
@@ -49,7 +49,7 @@ def user_update(request, pk):
 
 
 @user_passes_test(lambda u: u.is_superuser)
-def user_delete(request, pk):
+def user_status(request, pk):
     current_user = get_object_or_404(ShopUser, pk=pk)
     if request.method == 'POST':
         if current_user.is_active:
@@ -59,18 +59,25 @@ def user_delete(request, pk):
         current_user.save()
         return HttpResponseRedirect(reverse('adminapp:user_list'))
     context = {
-        'user_to_delete': current_user
+        'object': current_user
     }
-    return render(request, 'adminapp/user_delete.html', context)
+    return render(request, 'adminapp/user_status.html', context)
 
 
 # categories controllers
 @user_passes_test(lambda u: u.is_superuser)
 def category_create(request):
+    if request.method == 'POST':
+        category_form = ProductCategoryEditForm(request.POST)
+        if category_form.is_valid():
+            category_form.save()
+            return HttpResponseRedirect(reverse('adminapp:category_list'))
+    else:
+        category_form = ProductCategoryEditForm()
     context = {
-
+        'form': category_form
     }
-    return render(request, '', context)
+    return render(request, 'adminapp/category_form.html', context)
 
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -82,19 +89,36 @@ def categories(request):
 
 
 @user_passes_test(lambda u: u.is_superuser)
-def category_update(request):
+def category_update(request, pk):
+    current_category = get_object_or_404(ProductCategory, pk=pk)
+    if request.method == 'POST':
+        category_form = ProductCategoryEditForm(
+            request.POST, instance=current_category)
+        if category_form.is_valid():
+            current_category.save()
+            return HttpResponseRedirect(reverse('adminapp:category_list'))
+    else:
+        category_form = ProductCategoryEditForm(instance=current_category)
     context = {
-
+        'form': category_form
     }
-    return render(request, '', context)
+    return render(request, 'adminapp/category_form.html', context)
 
 
 @user_passes_test(lambda u: u.is_superuser)
-def category_delete(request):
+def category_status(request, pk):
+    current_category = get_object_or_404(ProductCategory, pk=pk)
+    if request.method == 'POST':
+        if current_category.is_active:
+            current_category.is_active = False
+        else:
+            current_category.is_active = True
+        current_category.save()
+        return HttpResponseRedirect(reverse('adminapp:category_list'))
     context = {
-
+        'object': current_category
     }
-    return render(request, '', context)
+    return render(request, 'adminapp/category_status.html', context)
 
 
 # products controllers

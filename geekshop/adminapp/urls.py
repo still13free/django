@@ -7,14 +7,14 @@ urlpatterns = [
     path('users/create/', views.user_create, name='user_create'),
     path('users/', views.users, name='user_list'),
     path('users/update/<int:pk>/', views.user_update, name='user_update'),
-    path('users/delete/<int:pk>/', views.user_delete, name='user_delete'),
+    path('users/status/<int:pk>/', views.user_status, name='user_status'),
 
     path('categories/create/', views.category_create, name='category_create'),
     path('categories/', views.categories, name='category_list'),
     path('categories/update/<int:pk>/',
          views.category_update, name='category_update'),
     path('categories/delete/<int:pk>/',
-         views.category_delete, name='category_delete'),
+         views.category_status, name='category_status'),
 
     path('products/create/category/<int:pk>/',
          views.product_create, name='product_create'),
