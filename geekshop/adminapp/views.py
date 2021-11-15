@@ -1,10 +1,16 @@
-from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
-from django.contrib.auth.decorators import user_passes_test
-from django.urls import reverse
-from adminapp.forms import ShopUserAdminEditForm, ProductCategoryEditForm
 from authapp.forms import ShopUserRegisterForm
 from authapp.models import ShopUser
-from mainapp.models import ProductCategory, Product
+from django.contrib.auth.decorators import user_passes_test
+from django.shortcuts import HttpResponseRedirect, get_object_or_404, render
+from django.urls import reverse, reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
+                                  UpdateView)
+from django.views.generic.edit import DeleteView
+from mainapp.models import Product, ProductCategory
+
+from adminapp.forms import (ProductCategoryEditForm, ProductEditForm,
+                            ShopUserAdminEditForm)
 
 
 # users controllers
@@ -23,12 +29,22 @@ def user_create(request):
     return render(request, 'adminapp/user_form.html', context)
 
 
-@user_passes_test(lambda u: u.is_superuser)
-def users(request):
-    context = {
-        'object_list': ShopUser.objects.all().order_by('-is_active')
-    }
-    return render(request, 'adminapp/users.html', context)
+# @user_passes_test(lambda u: u.is_superuser)
+# def users(request):
+#    context = {
+#        'object_list': ShopUser.objects.all().order_by('-is_active')
+#    }
+#    return render(request, 'adminapp/users.html', context)
+
+class AccessMixin:
+    @method_decorator(user_passes_test(lambda u: u.is_superuser))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+
+class UserListView(AccessMixin, ListView):
+    model = ShopUser
+    template_name = 'adminapp/users.html'
 
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -122,42 +138,64 @@ def category_status(request, pk):
 
 
 # products controllers
-@user_passes_test(lambda u: u.is_superuser)
-def product_create(request):
-    context = {
+class ProductCreateView(AccessMixin, CreateView):
+    model = Product
+    template_name = 'adminapp/product_form.html'
+    form_class = ProductEditForm
 
-    }
-    return render(request, '', context)
+    def get_success_url(self):
+        return reverse('adminapp:product_list', args=[self.kwargs['pk']])
 
-
-@user_passes_test(lambda u: u.is_superuser)
-def products(request, pk):
-    context = {
-        'category': get_object_or_404(ProductCategory, pk=pk),
-        'object_list': Product.objects.filter(category__pk=pk).order_by('-is_active')
-    }
-    return render(request, 'adminapp/products.html', context)
-
-
-@user_passes_test(lambda u: u.is_superuser)
-def product_detail(request):
-    context = {
-
-    }
-    return render(request, '', context)
+# @user_passes_test(lambda u: u.is_superuser)
+# def products(request, pk):
+#     context = {
+#         'category': get_object_or_404(ProductCategory, pk=pk),
+#         'object_list': Product.objects.filter(category__pk=pk).order_by('-is_active')
+#     }
+#     return render(request, 'adminapp/products.html', context)
 
 
-@user_passes_test(lambda u: u.is_superuser)
-def product_update(request):
-    context = {
+class ProductsListView(AccessMixin, ListView):
+    model = Product
+    template_name = 'adminapp/products.html'
 
-    }
-    return render(request, '', context)
+    def get_context_data(self, *args, **kwargs):
+        context_data = super().get_context_data(*args, **kwargs)
+        context_data['category'] = get_object_or_404(
+            ProductCategory, pk=self.kwargs.get('pk'))
+        return context_data
+
+    def get_queryset(self):
+        return Product.objects.filter(category__pk=self.kwargs.get('pk'))
 
 
-@user_passes_test(lambda u: u.is_superuser)
-def product_delete(request):
-    context = {
+class ProductDetailView(AccessMixin, DetailView):
+    model = Product
+    template_name = 'adminapp/product_detail.html'
 
-    }
-    return render(request, '', context)
+
+class ProductUpdateView(AccessMixin, UpdateView):
+    model = Product
+    template_name = 'adminapp/product_form.html'
+    form_class = ProductEditForm
+
+    def get_success_url(self):
+        product_item = Product.objects.get(pk=self.kwargs['pk'])
+        return reverse('adminapp:product_list', args=[product_item.category_id])
+
+
+class ProductDeleteView(AccessMixin, DeleteView):
+    model = Product
+    template_name = 'adminapp/product_status.html'
+
+    def get_success_url(self):
+        product_item = Product.objects.get(pk=self.kwargs['pk'])
+        return reverse('adminapp:product_list', args=[product_item.category_id])
+
+    # def delete(self, request, *args, **kwargs):
+    #     if self.object.is_active:
+    #         self.object.is_active = False
+    #     else:
+    #         self.object.is_active = True
+    #     self.object.save()
+    #     return HttpResponseRedirect(reverse('adminapp:product_list', args=[self.object.category_id]))
