@@ -1,5 +1,12 @@
+import hashlib
+from datetime import datetime, timedelta
+
+import pytz
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
+from django.conf import settings
+from django.contrib.auth.forms import (AuthenticationForm, UserChangeForm,
+                                       UserCreationForm)
+
 from authapp.models import ShopUser
 
 
@@ -35,6 +42,16 @@ class ShopUserRegisterForm(UserCreationForm):
         if data < 18:
             raise forms.ValidationError('Too young to die!')
         return data
+
+    def save(self, *args, **kwargs):
+        user = super().save(*args, **kwargs)
+        user.is_active = False
+        user.activate_key = hashlib.sha1(
+            (user.email).encode('utf8')).hexdigest()
+        user.activate_key_expired = datetime.now(
+            pytz.timezone(settings.TIME_ZONE)) + timedelta(hours=48)
+        user.save()
+        return user
 
 
 class ShopUserEditForm(UserChangeForm):
