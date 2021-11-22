@@ -918,6 +918,9 @@ html, body {
 	text-align: center;
 	margin: 15px 15px;
 }
+.tab-content a .preview {
+	height: 270px;
+}
 .tab-content a .text img {
 	margin: 70px auto 0;
 }
@@ -1174,7 +1177,7 @@ html, body {
 	background-color: #f7f7f7;
 	padding-left: 99px;
 	padding-right: 98px;
-	margin: -384px auto 0;
+	margin: 0 auto;
 	clear: both;
 }
 .footer form {

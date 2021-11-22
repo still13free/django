@@ -1,0 +1,13 @@
+{% extends 'authapp/base.html' %}
+{% load static %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <h1>Поздравляем!</h1>
+        <h2>Добро пожаловать в наш магазин!</h2>
+    {% else %}
+        <h1>Что-то пошло не так :( </h1>
+        <h2>Обратитесь в поддержку по адресу: support@rapc.local</h2>
+    {% endif %}
+    <hr>
+{% endblock content %}
