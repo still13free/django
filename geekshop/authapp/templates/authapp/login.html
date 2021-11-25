@@ -11,5 +11,7 @@
         <input class="form-control" type="submit" value="войти">
     </form>
     <hr>
-    Нет аккаунта? <a href="{% url 'auth:register' %}">Зарегистрируйтесь сейчас!</a></li>
+    Нет аккаунта? <a href="{% url 'auth:register' %}">Зарегистрируйтесь сейчас!</a>
+    <br>
+    Или <a href="{% url 'social:begin' 'vk-oauth2' %}?next=/">войдите через VK</a>
 {% endblock content %}

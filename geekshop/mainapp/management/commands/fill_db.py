@@ -1,5 +1,5 @@
 import json
-from os import name
+
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from authapp.models import ShopUser
