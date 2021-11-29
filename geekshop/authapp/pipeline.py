@@ -1,7 +1,10 @@
-import requests
 from datetime import datetime
-from authapp.models import ShopUserProfile
+
+import requests
+from django.conf import settings
 from social_core.exceptions import AuthForbidden
+
+from authapp.models import ShopUserProfile
 
 
 def save_user_profile(backend, user, response, *args, **kwargs):
@@ -10,7 +13,7 @@ def save_user_profile(backend, user, response, *args, **kwargs):
 
     url_method = 'https://api.vk.com/method/'
     access_token = response.get('access_token')
-    fields = ','.join(['bdate', 'sex', 'about', 'has_photo', 'photo_max'])
+    fields = ','.join(['bdate', 'sex', 'about', 'has_photo', 'photo_max_orig'])
     api_url = f'{url_method}users.get?fields={fields}&access_token={access_token}&v=5.131'
 
     response = requests.get(api_url)
@@ -39,5 +42,13 @@ def save_user_profile(backend, user, response, *args, **kwargs):
         user.shopuserprofile.gender = data_json['about']
 
     if 'has_photo' in data_json:
-        if data_json['has_photo'] == 1:
-            user.avatar = data_json['photo_max']
+        if not user.avatar and data_json['has_photo'] == 1:
+            print('!')
+            photo_inner_path = f'users_avatars/user_{user.pk}.jpeg'
+            photo_media_path = f'{settings.MEDIA_ROOT}/{photo_inner_path}'
+            photo_data = requests.get(data_json['photo_max_orig'])
+            with open(photo_media_path, 'wb') as photo_file:
+                photo_file.write(photo_data.content)
+            user.avatar = photo_inner_path
+
+    user.save()
