@@ -424,6 +424,14 @@ html, body {
     float: left;
 }
 
+.basket_list span.product_quantity {
+    margin-left: 1em;
+    width: 7em;
+    position: relative;
+    display: block;
+    float: left;
+}
+
 .basket_list .basket_record {
     position: relative;
     display: block;
