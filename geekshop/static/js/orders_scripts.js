@@ -40,6 +40,7 @@ window.onload = function () {
         } else {
             delta_quantity = quantity_arr[orderitem_num];
         }
+        switch_input_disable(orderitem_num)
         order_summary_update(price_arr[orderitem_num], delta_quantity);
     });
 
@@ -53,17 +54,22 @@ window.onload = function () {
         $('.order_total_cost').html(order_total_cost.toString());
     }
 
-    $('.formset_row').formset({
-        addText: 'Добавить товар',
-        deleteText: 'Удалить товар',
-        prefix: 'orderitems',
-        removed: deleteOrderItem,
-    });
+    // $('.formset_row').formset({
+    //     addText: 'Добавить товар',
+    //     deleteText: 'Удалить товар',
+    //     prefix: 'orderitems',
+    //     removed: deleteOrderItem,
+    // });
 
-    function deleteOrderItem(row) {
-        var target_name = row[0].querySelector('input[type=number]').name;
-        orderitem_num = parseInt(target.name.replace('orderitems-', '').replace('-quantity', ''));
-        delta_quantity = -quantity_arr[orderitem_num];
-        order_summary_update(price_arr[orderitem_num], delta_quantity);
+    // function deleteOrderItem(row) {
+    //     var target_name = row[0].querySelector('input[type=number]').name;
+    //     orderitem_num = parseInt(target_name.replace('orderitems-', '').replace('-quantity', ''));
+    //     delta_quantity = -quantity_arr[orderitem_num];
+    //     order_summary_update(price_arr[orderitem_num], delta_quantity);
+    // }
+
+    function switch_input_disable(orderitem_num) {
+        var orderitem_quantity_input = document.getElementById('id_orderitems-' + orderitem_num + '-quantity')
+        orderitem_quantity_input.disabled = !orderitem_quantity_input.disabled
     }
 }
