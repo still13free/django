@@ -1,0 +1,11 @@
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Account activation
+From: django@rapc.local
+To: saduser3@gb.local
+Date: Sun, 21 Nov 2021 14:47:18 -0000
+Message-ID: <163750603828.6224.381104280334793944@RAPCmod4>
+
+Your activation url: http://localhost:8000/auth/verify/saduser3@gb.local/77b282d00b190163056f2533182507b18bfbe20d/
+-------------------------------------------------------------------------------
