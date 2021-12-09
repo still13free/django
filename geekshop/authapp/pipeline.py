@@ -38,8 +38,8 @@ def save_user_profile(backend, user, response, *args, **kwargs):
             raise AuthForbidden('social_core.backends.vk.VKOAuth2')
         user.age = age
 
-    if 'bdate' in data_json:
-        user.shopuserprofile.gender = data_json['about']
+    if 'about' in data_json:
+        user.shopuserprofile.about_me = data_json['about']
 
     if 'has_photo' in data_json:
         if not user.avatar and data_json['has_photo'] == 1:
