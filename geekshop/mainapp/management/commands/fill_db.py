@@ -7,7 +7,7 @@ from mainapp.models import Product, ProductCategory
 
 
 def load_from_json(file_name):
-    with open(f'{settings.BASE_DIR}\mainapp\json\{file_name}.json', 'r', encoding='utf-8') as json_file:
+    with open(f'{settings.BASE_DIR}/mainapp/json/{file_name}.json', 'r', encoding='utf-8') as json_file:
         return json.load(json_file)
 
 
