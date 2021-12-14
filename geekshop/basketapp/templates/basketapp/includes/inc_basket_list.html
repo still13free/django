@@ -1,4 +1,4 @@
-{% for item in baskets %}
+{% for item in basket %}
     <div class="basket_record">
         <img src="/media/{{ item.product.image }}" alt="{{ item.product.short_desc }}">
         <span class="category_name">{{ item.product.category.name }}</span>
@@ -12,8 +12,8 @@
     </div>
 {% endfor %}
 
-{% if baskets %}
+{% if basket %}
     <div class="basket_summary">
-        В корзине {{ baskets.0.total_quantity }} товаров общей стоимостью {{ baskets.0.total_cost }} руб
+        В корзине {{ basket.0.total_quantity }} товаров общей стоимостью {{ basket.0.total_cost }} руб
     </div>
 {% endif %}

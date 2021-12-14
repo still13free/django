@@ -17,7 +17,7 @@ class OrderListView(ListView):
     model = Order
 
     def get_queryset(self):
-        return Order.objects.filter(user=self.request.user)
+        return Order.objects.filter(user=self.request.user).select_related()
 
 
 class OrderCreateView(CreateView):
@@ -32,7 +32,8 @@ class OrderCreateView(CreateView):
         if self.request.POST:
             formset = OrderFormSet(self.request.POST)
         else:
-            basket_items = Basket.objects.filter(user=self.request.user)
+            basket_items = Basket.objects.filter(
+                user=self.request.user).select_related()
             if basket_items.exists:
                 OrderFormSet = inlineformset_factory(
                     Order, OrderItem, OrderItemForm, extra=basket_items.count())
@@ -40,7 +41,7 @@ class OrderCreateView(CreateView):
                 for num, form in enumerate(formset.forms):
                     form.initial['product'] = basket_items[num].product
                     form.initial['quantity'] = basket_items[num].quantity
-                    form.initial['price'] = basket_items[num].price
+                    form.initial['price'] = basket_items[num].product.price
             else:
                 formset = OrderFormSet()
         context_data['orderitems'] = formset

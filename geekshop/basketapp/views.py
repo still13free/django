@@ -6,11 +6,14 @@ from basketapp.models import Basket
 from mainapp.models import Product
 
 
+def get_baskets_list(user):
+    return Basket.objects.filter(user=user).select_related()
+
+
 @login_required
 def basket(request):
-    baskets_list = Basket.objects.filter(user=request.user)
     context = {
-        'baskets': baskets_list
+        'basket': get_baskets_list(request.user)
     }
     return render(request, 'basketapp/basket.html', context)
 
@@ -48,9 +51,8 @@ def edit(request, pk, quantity):
         else:
             basket_item.delete()
 
-    basket_list = Basket.objects.filter(user=request.user)
     context = {
-        'baskets': basket_list
+        'basket': get_baskets_list(request.user)
     }
     result = render_to_string(
         'basketapp/includes/inc_baskets_list.html', context)

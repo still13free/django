@@ -1,7 +1,10 @@
 psycopg2-binary
 pillow
-django
+django==3.2.9
 social_auth_app_django
 requests
 gunicorn
 pytz
+python-dotenv
+django-debug-toolbar
+django-debug-toolbar-template-profiler
