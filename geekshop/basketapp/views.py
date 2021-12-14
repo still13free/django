@@ -13,7 +13,7 @@ def get_baskets_list(user):
 @login_required
 def basket(request):
     context = {
-        'baskets': get_baskets_list(request.user)
+        'basket': get_baskets_list(request.user)
     }
     return render(request, 'basketapp/basket.html', context)
 
@@ -52,7 +52,7 @@ def edit(request, pk, quantity):
             basket_item.delete()
 
     context = {
-        'baskets': get_baskets_list(request.user)
+        'basket': get_baskets_list(request.user)
     }
     result = render_to_string(
         'basketapp/includes/inc_baskets_list.html', context)
