@@ -1,8 +1,9 @@
 import random
 
-from basketapp.models import Basket
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.conf import settings
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.shortcuts import get_object_or_404, render
+from django.core import cache
 
 from mainapp.models import Product, ProductCategory
 
@@ -16,7 +17,14 @@ def get_same_products(hot_product):
 
 
 def get_product_categories():
-    return ProductCategory.objects.all()
+    if settings.LOW_CACHE:
+        key = 'categories'
+        links_menu = cache.get(key)
+        if links_menu is None:
+            links_menu = ProductCategory.objects.filter(is_active=True)
+            cache.set(key, links_menu)
+        return links_menu
+    return ProductCategory.objects.filter(is_active=True)
 
 
 def main(request):
@@ -35,6 +43,7 @@ def contacts(request):
 
 
 def products(request, pk=None, page=1):
+    links_menu = get_product_categories()
     if pk is not None:
         if pk == 0:
             products_list = Product.objects.all()
@@ -56,7 +65,7 @@ def products(request, pk=None, page=1):
             products_paginator = paginator.page(paginator.num_pages)
         context = {
             'title': 'Продукты',
-            'links_menu': get_product_categories(),
+            'links_menu': links_menu,
             'category': category_item,
             'products': products_paginator,
         }
@@ -66,7 +75,7 @@ def products(request, pk=None, page=1):
     same_products = get_same_products(hot_product)
     context = {
         'title': 'Продукты',
-        'links_menu': get_product_categories(),
+        'links_menu': links_menu,
         'hot_product': hot_product,
         'same_products': same_products,
     }
