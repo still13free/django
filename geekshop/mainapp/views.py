@@ -1,9 +1,10 @@
 import random
 
 from django.conf import settings
+from django.core.cache import cache
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.shortcuts import get_object_or_404, render
-from django.core.cache import cache
+from django.views.decorators.cache import cache_page
 
 from mainapp.models import Product, ProductCategory
 
@@ -61,6 +62,7 @@ def get_all_products():
     return Product.objects.filter(is_active=True, category__is_active=True).select_related('category')
 
 
+@cache_page(3600)
 def main(request):
     context = {
         'title': 'Главная',
@@ -69,6 +71,7 @@ def main(request):
     return render(request, 'mainapp/index.html', context=context)
 
 
+@cache_page(3600)
 def contacts(request):
     context = {
         'title': 'Контакты',
