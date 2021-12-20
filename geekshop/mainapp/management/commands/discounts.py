@@ -56,5 +56,5 @@ class Command(BaseCommand):
         ).order_by('action_order')
 
         for item in order_items_list:
-            print(f'{item.action_order:3}: заказ №{item.pk:3}: {item.product.name:13}:'
+            print(f'{item.action_order:3}: заказ №{item.order.pk:3}: {item.product.name:13}:'
                   f'{item.discount_price:6.2f}: {item.order.updated_at - item.order.created_at}')
