@@ -3,6 +3,7 @@ import random
 from django.conf import settings
 from django.core.cache import cache
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.cache import cache_page
 
@@ -64,9 +65,11 @@ def get_all_products():
 
 # @cache_page(3600)
 def main(request):
+    is_classic = Q(category__name='классика')
+    is_modern = Q(category__name='модерн')
     context = {
         'title': 'Главная',
-        'products': get_all_products()[:4],
+        'products': get_all_products().filter(is_classic | is_modern)
     }
     return render(request, 'mainapp/index.html', context=context)
 
