@@ -5,4 +5,4 @@ venv/
 .env
 .idea
 .vscode
-.code-workspace
+django_vscode.code-workspace
