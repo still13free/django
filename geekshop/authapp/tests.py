@@ -88,7 +88,7 @@ class AuthUserTestCase(TestCase):
             'last_name': 'Джексон',
             'password1': 'geekbrains',
             'password2': 'geekbrains',
-            'email': 'sumuel@geekshop.local',
+            'email': 'samuel@geekshop.local',
             'age': '21',
         }
 
@@ -98,6 +98,7 @@ class AuthUserTestCase(TestCase):
         new_user = ShopUser.objects.get(username=new_user_data['username'])
 
         activation_url = f"{settings.BASE_URL}/auth/verify/{new_user_data['email']}/{new_user.activate_key}/"
+        print(activation_url)
 
         response = self.client.get(activation_url)
         self.assertEqual(response.status_code, self.status_ok)
