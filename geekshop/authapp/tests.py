@@ -61,7 +61,7 @@ class AuthUserTestCase(TestCase):
         self.assertEqual(response.status_code, self.status_ok)
         self.assertEqual(list(response.context['basket']), [])
         self.assertEqual(response.request['PATH_INFO'], '/basket/')
-        self.assertIn('Ваша корзина, Пользователь', response.content.decode())
+        self.assertIn('Ваша корзина, пользователь', response.content.decode())
 
     def test_user_logout(self):
         self.client.login(username=self.username, password=self.password,)
@@ -97,7 +97,7 @@ class AuthUserTestCase(TestCase):
 
         new_user = ShopUser.objects.get(username=new_user_data['username'])
 
-        activation_url = f"{settings.DOMAIN_NAME}/auth/verify/{new_user_data['email']}/{new_user.activation_key}/"
+        activation_url = f"{settings.BASE_URL}/auth/verify/{new_user_data['email']}/{new_user.activation_key}/"
 
         response = self.client.get(activation_url)
         self.assertEqual(response.status_code, self.status_ok)
@@ -127,4 +127,4 @@ class AuthUserTestCase(TestCase):
         response = self.client.post('/auth/register/', data=new_user_data)
         self.assertEqual(response.status_code, self.status_ok)
         self.assertFormError(response, 'register_form',
-                             'age', 'Вы слишком молоды!')
+                             'age', 'Too young to die!')
