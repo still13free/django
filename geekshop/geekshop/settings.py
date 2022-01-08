@@ -183,7 +183,7 @@ SOCIAL_AUTH_VK_OAUTH2_SECRET = os.getenv('SOCIAL_AUTH_VK_OAUTH2_SECRET')
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'social_core.backends.vk.VKOAuth2',
+    # 'social_core.backends.vk.VKOAuth2',
 )
 
 API_VERSION = 5.131
@@ -240,4 +240,4 @@ CACHES = {
     }
 }
 
-LOW_CACHE = True
+LOW_CACHE = False
