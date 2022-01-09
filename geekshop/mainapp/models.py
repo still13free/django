@@ -41,3 +41,8 @@ class Product(models.Model):
         else:
             self.is_active = True
         self.save()
+
+# добавлено ради уданых тестов
+    @staticmethod
+    def get_items():
+        return Product.objects.filter(is_active=True).order_by('category', 'name')

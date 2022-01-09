@@ -1,6 +1,10 @@
 from authapp.forms import ShopUserRegisterForm
 from authapp.models import ShopUser
 from django.contrib.auth.decorators import user_passes_test
+from django.db import connection
+from django.db.models.expressions import F
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from django.shortcuts import HttpResponseRedirect, get_object_or_404, render
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
@@ -121,6 +125,27 @@ def category_update(request, pk):
     return render(request, 'adminapp/category_form.html', context)
 
 
+"""
+ТАК НЕ ДЕЛАТЬ!!!
+вводятся тарифные сетки
+или пользуй поле изначально в моделе
+"""
+# class ProductCategoryUpdateView(UpdateView):
+#     model = ProductCategory
+#     template_name = 'adminapp/product_form.html'
+#     form_class = ProductCategoryEditForm
+#     success_url = reverse_lazy('adminapp:category_list')
+
+#     def form_valid(self, form):
+#         if 'discount' in form.cleaned_data:
+#             discount = form.cleaned_data.get('discount')
+#             if discount:
+#                 self.object.product_set.update(
+#                     price=F('price') * (1 - discount/100)
+#                 )
+#             return super().form_valid(form)
+
+
 @user_passes_test(lambda u: u.is_superuser)
 def category_status(request, pk):
     current_category = get_object_or_404(ProductCategory, pk=pk)
@@ -199,3 +224,19 @@ class ProductDeleteView(AccessMixin, DeleteView):
     #         self.object.is_active = True
     #     self.object.save()
     #     return HttpResponseRedirect(reverse('adminapp:product_list', args=[self.object.category_id]))
+
+
+def db_profile_by_type(prefix, type, queries):
+    update_queries = list(filter(lambda x: type in x['sql'], queries))
+    print(f'db_profile {type} for {prefix}:')
+    [print(query['sql']) for query in update_queries]
+
+
+@receiver(pre_save, sender=ProductCategory)
+def product_is_active_update_productcategory_save(sender, instance, **kwargs):
+    if instance.pk:
+        if instance.is_active:
+            instance.product_set.update(is_active=True)
+        else:
+            instance.product_set.update(is_active=False)
+        db_profile_by_type(sender, 'UPDATE', connection.queries)
